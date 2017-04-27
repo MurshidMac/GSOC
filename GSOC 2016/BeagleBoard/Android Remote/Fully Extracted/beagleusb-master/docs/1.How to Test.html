@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.11: http://docutils.sourceforge.net/" />
+<title>BeagleBone USB Driver</title>
+<link rel="stylesheet" href="./docs.css" type="text/css" />
+
+</head>
+<body>
+<div class="document" id="building-the-s2e-platform">
+<h1 class="title">Build & Test BeagleUSB: An android based USB driver</h1>
+
+
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#build-script" id="id0">Test Using Build Script</a></li>
+<li><a class="reference internal" href="#enable-features" id="id1">Enable Audio/Video/Input</a></li>
+<li><a class="reference internal" href="#modification" id="id2">Modification for Google Device</a></li>
+</ul>
+</div>
+
+
+
+<div class="section" id="build-script">
+<h1>Test Using Build Script</h1>
+We've added a build script <mark>build.sh</mark> in the source directory which gives all the functions required to build and test the driver. It defines following functions:
+<p/><pre class="literal-block">
+make - builds the binary
+clean - clean up the built binaries
+install - installs the built drivers in your system
+uninstall - uninstalls the installed drivers from your system
+run - run X on the installed framebuffervers from your system
+</pre>
+
+<p/>The following command will create binaries from source:
+<pre class="literal-block">
+./build.sh make
+</pre>
+
+<p/>Install the created binaries using:
+<pre class="literal-block">
+./build.sh install
+</pre>
+
+<p/> Once the driver is installed, you can now connect your android device using a USB cable. If the driver works correctly, you'll see the corresponding android app pop up in your screen and there should be a green background which means the device was able to read data from the USB. A new frame buffer device file <mark>fb1</mark> will be created in <mark>/dev/</mark> directory. Now run X on this framebuffer device:
+<pre class="literal-block">
+./build.sh run
+</pre>
+
+<p/>If everything works well, you'll see the desktop on the connected android device now. You can check the <a class="reference internal" href="#enable-features" id="id1">Enable Audio/Video/Input</a> to optionally enable or disable a stream now.
+
+<p/>If any of the above steps doesn't work, follow <a class="reference internal" href="#modification" id="id2">Modification for Google Device</a>
+</div>
+
+<div class="section" id="enable-features">
+<h1>Enable Audio/Video/Input</h1>
+Enable/disabe features in <mark>features.h</mark> file. 0 means disabled, 1 means enabled. So if you want to test only framebuffer driver but no audio or input, the <mark>features.h</mark> file should look like this:
+<pre class="literal-block">
+#define AUDIO 		0
+#define INPUT		0
+#define VIDEO		1
+</pre>
+</div>
+
+
+<div class="section" id="modification">
+<h1>Modification for Google Device</h1>
+At this point you can shoot an email telling us your android devices model number so we can check. But if you are smart enough you would be able to fix it yourself. We have a device descriptor list in the driver source. If your device isn't included in the descriptor list, this driver won't work for you. So you might have to add those device manually. If you are not using a Google device like NEXUS, you can go through the <mark>adk/adk.c</mark> file to see how the device descriptors are organized. Once you understand that, you can add your device descriptor there. To get your devices descriptor information follow  <a href="Get Device Info.html">Get Device Info</a>.
+
+<p/> For Google device you have to modify on some specific lines due to some mistmatch of Google devices product id and vendor id. If you are using a Google device, like NEXUS, replace line 183 in <mark>adk/adk.c</mark> file with following line:
+<pre class="literal-block">
+	{USB_DEVICE_AND_INTERFACE_INFO(vendorId, productId, bInterfaceClass, bInterfaceSubclass, bProtocol)},
+</pre>
+<p/>To get the <mark>vendorId, productId, bInterfaceClass, bInterfaceSubclass, bProtocol</mark> informations, follow <a href="Get Device Info.html">Get Device Info</a>
+
+<p/> Now start over from the beginning and see if the changes make it work. If these steps do not fix it, you really should let us know. Your feedback will help us to fix any bugs we might have.
+</div>
+
+</body>
+</div>
+</html>
