@@ -13,7 +13,8 @@ So here I have included both my projects year for past years which I got some go
  [Github/ccextractor](https://github.com/ccextractor)
  
  ## 2017
- * LibreHealth Cornestone.js html DICOM image viewer
+ * LibreHealth Cornestone.js html5 DICOM image viewer
+ 
  This is one. I personally consider as the best project which I have ever worked on. It uses angular to implement an interface for that uses the [Cornestone.js](https://github.com/chafey/cornerstone) library to trending medical imagery. 
  
  
